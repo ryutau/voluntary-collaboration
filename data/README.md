@@ -3,7 +3,7 @@ We have the following two files in this directory:
 
 1. `exp_result.csv`: This file contains behavioral data from our main task (threshold public games). Each row represents the result of a participant for a specific round. The columns in this file are detailed as:
 
-   - **pid**: Represents the participant's identification code. Use this when merging with `participant+attributes.csv`.
+   - **pid**: Represents the participant's identification code. Use this when merging with `participant_attributes.csv`.
    - **p_option**: Indicates whether group participation is mandatory ("A") or voluntary ("F") for the round.
    - **thr**: Shows the threshold value of the round.
    - **action**: Describes the action chosen by the participant. The possible actions are:
