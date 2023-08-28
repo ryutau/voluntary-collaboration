@@ -26,17 +26,17 @@ We have the following two files in this directory:
    - **fs_beta**: Indicates the participant's aversion to advantageous inequity, as measured by the FS-model.
    - **r_from_hl**: Indicates the participant's risk attitude, as measured by the  methodology in Holt and Laury, 2002.
    - **iri_EC**: Indicates the participant's tendency to experience feelings of sympathy and compassion for unfortunate others assessed by the empathetic concern (EC) scale in Davis, 1980.
-   - **iri_PD**: Indicates the participant's tendency to experience distress and discomfort in response to extreme distress in others assessed by the personal distress (PD) scale in Davis, 1980.
-   - **iri_PT**: Indicates the participant's tendency to imaginatively transpose oneself into fictional situations psychological point of view of others in everyday life measured by the perspective taking (PT) scale in Davis, 1980.
    - **iri_FS**: Indicates the participant's tendency to imaginatively transpose oneself into fictional situations measured by the fantasy (FS) scale in Davis, 1980.
+   - **iri_PD**: Indicates the participant's tendency to experience distress and discomfort in response to extreme distress in others assessed by the personal distress (PD) scale in Davis, 1980.
+   - **iri_PT**: Indicates the participant's tendency to spontaneously adopt the psychological point of view of others in everyday life measured by the perspective taking (PT) scale in Davis, 1980.
    - **siut**: Denotes the participant's intolerance against uncertainty measured by short intolerance of uncertainty scale in Carleton et al., 2007.
-   - **crt**: Indicates the participant's tendency to suppress an intuitive but incorrect answer and come to a more deliberate and correct answer measured by cognitive reflection tests adopted from Baron et al., 2015. and Toplak et al., 2014.
-   - **general trust**: Indicates the participant's beliefs about honesty and trustworthiness of other, in general, assessed by questions from Yamagishi and Yamagishi, 1994.
-   - **gender**: Denotes the participant's gender (male, female, or other).
-   - **age**: Denotes the participant's age.
+   - **crt**: Indicates the participant's tendency to suppress an intuitive but incorrect answer and come to a more deliberate and correct answer, as measured by the cognitive reflection tests adopted from Baron et al., 2015. and Toplak et al., 2014.
+   - **general trust**: Indicates the participant's beliefs about honesty and trustworthiness of others, in general, assessed by questions from Yamagishi and Yamagishi, 1994.
+   - **gender**: Refers the participant's gender (male, female, or other).
+   - **age**: Refers the participant's age.
    - **t_order**: Denotes the order of conditions the participant was assigned to. Note that the ordering of the six conditions was (partially) randomized across participants: Each session was set to initiate with either the voluntary or the mandatory conditions, and within each of the voluntary and mandatory conditions, there were 6 possible permutations, stemming from combinations of the values (2, 4, 5). t_order represents each participant's sequence of conditions:
      - We employ a base-6 numbering system.
-     - The first digit stands for the sequence of threshold values within the VOLUNTARY condition. It ranges from 0 to 5, corresponding to the permutations: [(2, 4, 5), (2, 5, 4), (4, 2, 5), (4, 5, 2), (5, 2, 4), (5, 4, 2)].
-     - The second digit is indicative of the sequence of threshold values for the MANDATORY condition.
-     - The third digit in this base-6 number is set to 1 if the session started with the MANDatory condition and 0 otherwise.
-     - This base-6 number is then converted into its decimal equivalent.
+     - The first digit stands for the sequence of threshold values within the voluntary conditions. It ranges from 0 to 5, corresponding to the permutations: [(2, 4, 5), (2, 5, 4), (4, 2, 5), (4, 5, 2), (5, 2, 4), (5, 4, 2)].
+     - The second digit is indicative of the sequence of threshold values for the mandatory conditions.
+     - The third digit in this base-6 number is set to 1 if the session started with the mandatory conditions and 0 if it started with the voluntary conditions.
+     - This base-6 number is then converted into its decimal equivalent, rangeing from 0 to 71.
