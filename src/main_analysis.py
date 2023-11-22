@@ -3,15 +3,18 @@ import numpy as np
 from tqdm import tqdm
 from multiprocessing import Pool
 import sys
+import os
 sys.path.append("../")
 
 from tools import bootstrap_sampling, compute_non_reg_stats, compute_reg_stats
 
-# original table containing all relevant variables from the experiments
+# Load original table containing all relevant variables from the experiments
 exp_data = pd.read_csv("../data/exp_result.csv", index_col=0)
-# original table containing participants' attributes
+
+# Load original table containing participants' attributes
 participant_data = pd.read_csv("../data/participant_attributes.csv", index_col=0)
-# created table for regression analyses
+
+# Create a modified table for regression analyses
 reg_data = exp_data.set_index("p_option").groupby(["pid", "thr"]).apply(
     lambda data: pd.Series(dict(
         M_gamma_c=data.loc["A", "gamma_c"],
@@ -21,6 +24,9 @@ reg_data = exp_data.set_index("p_option").groupby(["pid", "thr"]).apply(
         action_change=int(data.loc["F", "is_coop"]) - int(data.loc["A", "is_coop"])
     ))
 ).reset_index().merge(participant_data, on="pid")
+
+# Prepare a directory to store output files
+os.makedirs("../output/", exist_ok=True)
 
 
 def main():
@@ -36,6 +42,7 @@ def main():
         )
         stats_df.to_csv(f"../output/bootstrap_{tgt}.csv")
         aggregate_stats_from_bootstrap(stats_df, tgt)
+
 
 def aggregate_stats_from_bootstrap(stats_df, tgt):
     def ci95_lower(x):
@@ -100,7 +107,6 @@ def aggregate_stats_from_bootstrap(stats_df, tgt):
         .sort_index(axis="columns")
     )
     stats_df_per_condition.to_csv(f"../output/stats_df_per_condition_{tgt}.csv")
-
 
 
 def resample_and_compute_stats(seed):
