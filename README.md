@@ -34,7 +34,7 @@ After setting up the environment, navigate to the `src` directory to run various
 $ cd src
 ```
 
-First, please run `src/main_analysis.py` to perform all the analysis. This may take few hours depending on your environment.
+First, please run `src/main_analysis.py` to perform all the analysis. This may take less than a few hours, depending on your environment.
 ```
 $ python main_analysis.py
 ```
