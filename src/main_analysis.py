@@ -35,10 +35,11 @@ def main():
     with Pool(4) as pool:
         imap = pool.imap_unordered(resample_and_compute_stats, range(n_simulations))
         bootstrap_result = list(tqdm(imap, total=n_simulations))
-    for tgt in ["non_reg_stats", "reg_stats"]:
+    for tgt, sort_cols in zip(["non_reg_stats", "reg_stats"], [["seed", "p_option", "thr"], ["seed"]]):
         stats_df = (
             pd.DataFrame(np.ravel([data[tgt] for data in bootstrap_result]).tolist())
-            .sort_values(["seed", "p_option", "thr"])
+            .sort_values(sort_cols)
+            .reset_index(drop=True)
         )
         stats_df.to_csv(f"../output/bootstrap_{tgt}.csv")
         aggregate_stats_from_bootstrap(stats_df, tgt)
