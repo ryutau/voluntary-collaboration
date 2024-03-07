@@ -6,7 +6,7 @@ by Ryutaro Mori, Nobuyuki Hanaki, and Tatsuya Kameda
 ## Overview
 This repository is organized into the following subdirectories:
 
-- `data` contains original data from the experiment.
+- `data` contains original data from experiments.
 - `src` contains Python scripts for analyses and visualizations in the paper, with the help of several functions in `tools`.
 - `documents` includes the English translation of experimental materials.
 
