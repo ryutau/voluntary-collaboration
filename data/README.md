@@ -1,7 +1,7 @@
 # Data Descriptions
 We have the following two files in this directory:
 
-1. `exp_result.csv`: This file contains behavioral data from our main task (threshold public games). Each row represents the result of a participant for a specific round. The columns in this file are detailed as:
+1. `main_exp_result.csv`: This file contains behavioral data from our main task (threshold public games) of the main experiment. Each row represents the result of a participant for a specific round. The columns in this file are detailed as follows:
 
    - **pid**: Represents the participant's identification code. Use this when merging with `participant_attributes.csv`.
    - **p_option**: Indicates whether group participation is mandatory ("A") or voluntary ("F") for the round.
@@ -19,7 +19,7 @@ We have the following two files in this directory:
    - **is_coop**: A boolean field that returns true if `action` is "C".
    - **is_leave**: A boolean field that returns true if `action` is "L".
 
-2. `participant_attributes.csv`: This file contains participants economic, psychological, or demografic attributes elicited from subbordinate tasks and postexperimental questionnaire. Each row represents attributes of a participant. The columns in this file are detailed as:
+2. `main_participant_attributes.csv`: This file contains the attributes of the participants in the main experiment, including economic, psychological, or demographic attributes elicited from the sub tasks and the postexperimental questionnaire. Each row represents attributes of a participant. The columns in this file are detailed as follows:
 
    - **pid**: Represents the participant's identification code. Use this when merging with `exp_result.csv`.
    - **fs_alpha**: Represents the participant's aversion to disadvantageous inequity, as derived from Fehr and Schmidt's utility function (FS-model).
@@ -40,3 +40,24 @@ We have the following two files in this directory:
      - The second digit is indicative of the sequence of threshold values for the mandatory conditions.
      - The third digit in this base-6 number is set to 1 if the session started with the mandatory conditions and 0 if it started with the voluntary conditions.
      - This base-6 number is then converted into its decimal equivalent, rangeing from 0 to 71.
+
+3. `sub_exp_result.csv`: This file contains behavioral data from the additional experiment. Each row represents the result of a participant for a specific round. The columns in this file are detailed as follows:
+
+   - **participant_code**: Represents the participant's identification code. Use this when merging with `sub_participant_attributes.csv`.
+   - **rho**: Can be either 0, 0.5, or 1, and indicates the degree of loners' externality (i.e., the probability of a loner being included in the five-person groups) for the round.
+   - **belief_c**: Indicates the participant's estimation of the number of other players choosing the action 'cooperate'.
+   - **belief_d**: Indicates the participant's estimation of the number of other players choosing to 'defect'.
+   - **belief_l**: Indicates the participant's estimation of the number of other players deciding to 'leave'. This field will be NULL if group participation is mandatory.
+   - **action**: Describes the action chosen by the participant. The possible actions are:
+     - Cooperate ("C")
+     - Defect ("D")
+     - Leave ("L")
+   - **is_coop**: A boolean field that returns true if `action` is "C".
+   - **round_no**: Integer indicating the participant's current round number.
+
+4. `sub_participant_attributes.csv`: This file contains the attributes of the participants in the additional experiment. The columns in this file are detailed as follows:
+
+   - **participant_code**: Represents the participant's identification code. Use this when merging with `sub_exp_result.csv`.
+   - **age**: Indicates the participant's age.
+   - **gender**: Indicatess the participant's gender (male: 0, female: 1, or not to declare: 3).
+   - **session_no**: Indicates the session number that the participant involved.

@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.metrics import roc_curve
 import re
 import os
 import sys
@@ -16,31 +17,36 @@ script_name = re.sub(r"\.py$", "", os.path.basename(__file__))
 
 
 def main():
-    exp_data = pd.read_csv("../data/exp_result.csv", index_col=0)
-    voluntary_data = exp_data[lambda x: x.p_option == "F"]
-    voluntary_data["gamma_class"] = voluntary_data['gamma_c'].apply(floor_float, n=1)
-    voluntary_data["is_defect"] = voluntary_data["action"] == "D"
+    exp_data = pd.read_csv("../data/main_exp_result.csv", index_col=0)
+    group_data = exp_data[lambda x: ~x.is_leave].dropna(subset=["gamma_c"])
+    fig, axes = plt.subplots(2, 3, figsize=(10, 6))
+    for (thr, p_option), tgt_data in group_data.groupby(["thr", "p_option"]):
+        row = 0 if p_option == "A" else 1
+        col = {2: 0, 4: 1, 5:2}[thr]
+        ax = axes[row][col]
+        tgt_data["p_piv"] = tgt_data.apply(lambda x: p_k(4, x.gamma_c, x.thr - 1), axis=1)
 
-    fig, axes = plt.subplots(1, 3, figsize=(8.5, 3.3))
-    for ax, (thr, thr_data) in zip(axes, voluntary_data.groupby("thr")):
-        ax.set_title(f'Threshold: {thr}', fontsize=16)
-        x = [i / 10 for i in range(11)]
-        non_coop_rate = 1 - thr_data.groupby(["gamma_class"]).is_coop.mean().reindex(x)
-        defect_rate = thr_data.groupby(["gamma_class"]).is_defect.mean().reindex(x)
-        ax.plot(x, non_coop_rate, color='C0', linestyle='-', marker='o', label="Noncoop.")
-        ax.plot(x, defect_rate, color='C0', linestyle='--', marker='.', label="Defect")
-        ax.set_ylim(-.1, 1.1)
-        ax.set_yticks([])
-        ax.spines[["top", "right", "left"]].set_visible(False)
-        ax.set_xlim(-.05, 1.05)
-        if thr == 2:
-            ax.set_ylabel(r"Defection/Noncooperation rate")
-            ax.set_yticks([0, .5, 1])
-            ax.legend(frameon=False, loc="upper right", fontsize=12)
-        elif thr == 4:
-            ax.set_xlabel('Belief about others (γ) under voluntary participation', labelpad=13)
-        ax.set_zorder(2)
-        ax.patch.set_alpha(0)
+        fpr_raw, tpr_raw, thresholds_raw = roc_curve(tgt_data["is_coop"], tgt_data["gamma_c"])
+        fpr_piv, tpr_piv, thresholds_piv = roc_curve(tgt_data["is_coop"], tgt_data["p_piv"])
+
+        # ROC-curve
+        ax.plot(fpr_raw, tpr_raw, label="Raw expectation ($\gamma$)", color="C1")
+        ax.plot(fpr_piv, tpr_piv, label='Pivotal probability', color="C0")
+        ax.set_xticks([0, .5, 1])
+        ax.set_yticks([0, .5, 1])
+        ax.spines[["top", "right"]].set_visible(False)
+        if row == 1:
+            ax.set_xlabel('False Positive Rate')
+        else:
+            ax.set_title(f"Threshold: {thr}", y=1.1)
+        if col == 0:
+            ax.set_ylabel('True Positive Rate')
+            p_option_str = "Mandatory" if p_option == "A" else "Voluntary"
+            ax.text(-1.2, .5, p_option_str, fontsize=16)
+        if row == 1 and col == 2:
+            ax.legend(frameon=False, fontsize=12, loc="upper left")
+        else:
+            ax.plot([0, 1], [0, 1], 'k--')
     plt.tight_layout()
     plt.savefig(f"{save_dir(script_name)}/FigS3.pdf", format="pdf", dpi=300, bbox_inches="tight", transparent=True)
     plt.close()

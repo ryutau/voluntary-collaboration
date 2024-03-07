@@ -19,7 +19,7 @@ plt.rcParams['hatch.linewidth'] = 1.5
 script_name = re.sub(r"\.py$", "", os.path.basename(__file__))
 
 def main():
-    exp_data = pd.read_csv("../data/exp_result.csv", index_col=0)
+    exp_data = pd.read_csv("../data/main_exp_result.csv", index_col=0)
     d_l_ratio_dic = {thr: compute_d_l_ratio(thr_data) for thr, thr_data in exp_data.groupby("thr")}
     p_leave_by_action = bootstrap_p_leave_by_action(exp_data)
     p_coop_non_loner = load_bootstrap_p_coop_non_loner(exp_data)

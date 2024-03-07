@@ -9,10 +9,10 @@ sys.path.append("../")
 from tools import bootstrap_sampling, compute_non_reg_stats, compute_reg_stats
 
 # Load original table containing all relevant variables from the experiments
-exp_data = pd.read_csv("../data/exp_result.csv", index_col=0)
+exp_data = pd.read_csv("../data/main_exp_result.csv", index_col=0)
 
 # Load original table containing participants' attributes
-participant_data = pd.read_csv("../data/participant_attributes.csv", index_col=0)
+participant_data = pd.read_csv("../data/main_participant_attributes.csv", index_col=0)
 
 # Create a modified table for regression analyses
 reg_data = exp_data.set_index("p_option").groupby(["pid", "thr"]).apply(

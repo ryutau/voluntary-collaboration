@@ -15,11 +15,13 @@ plt.rcParams['hatch.linewidth'] = 1.5
 script_name = re.sub(r"\.py$", "", os.path.basename(__file__))
 
 def main():
-    bootstrap_result = load_bootstrap_result()
-    visualize_fig2(bootstrap_result)
+    exp_data = pd.read_csv("../data/main_exp_result.csv", index_col=0)
+    bootstrap_result = load_bootstrap_result(exp_data)
+    plot_pies(exp_data)
+    visualize_BCD(bootstrap_result)
 
-def load_bootstrap_result():
-    original_exp_data = pd.read_csv("../data/exp_result.csv", index_col=0)
+
+def load_bootstrap_result(original_exp_data):
     non_reg_stats = pd.read_csv("../output/bootstrap_non_reg_stats.csv", index_col=0)
     tgt_cols = ["p_coop", "p_suc", "pop_efficiency", "group_efficiency"]
     non_reg_stats_per_condition = (
@@ -36,7 +38,28 @@ def load_bootstrap_result():
     return non_reg_stats_per_condition.join(original_non_reg_stats).sort_index(axis="columns")
 
 
-def visualize_fig2(bootstrap_result):
+def plot_pies(exp_data):
+    N = exp_data['pid'].nunique()
+    for (thr, p_option), tgt_data in exp_data.groupby(["thr", "p_option"]):
+        plt.figure(figsize=(3, 3))
+        options = ["C", "D"] if p_option == "A" else ["C", "D", "L"]
+        cnt_actions = tgt_data.action.value_counts().reindex(options, fill_value=0)
+        plt.pie(
+            cnt_actions, startangle=90, labels=None,
+            autopct=lambda x: int(round(N*x/100, 0)),
+            counterclock=False, colors=["C1", "C0", "C2"],
+            textprops={'fontsize': 30, "color": "w"},
+            wedgeprops={'linewidth': 2, 'edgecolor':"white"}
+        )
+        plt.axis('equal')
+        plt.savefig(
+            f"{save_dir(script_name)}/Fig2A_pie_{thr}_{p_option}.pdf",
+            format="pdf", dpi=300, bbox_inches="tight", transparent=True
+        )
+        plt.close()
+
+
+def visualize_BCD(bootstrap_result):
     m_color = "#FF4747"
     v_color = "#8CE7F8"
     fig, axes = plt.subplots(
@@ -45,7 +68,7 @@ def visualize_fig2(bootstrap_result):
     )
     fig.subplots_adjust(wspace=.5)
 
-    # A
+    # B
     ax = axes[0]
     width = 0.4
     for i, q in enumerate([2, 4, 5]):
@@ -65,7 +88,7 @@ def visualize_fig2(bootstrap_result):
     ax.spines[["top", "right", "left"]].set_visible(False)
     ax.legend(frameon=False, bbox_to_anchor=(0, 1.05), loc="upper left", fontsize=10)
 
-    # B
+    # C
     ax = axes[1]
     width = 0.4
     for i, q in enumerate([2, 4, 5]):
@@ -85,7 +108,7 @@ def visualize_fig2(bootstrap_result):
     ax.spines[["top", "right", "left"]].set_visible(False)
     ax.legend(frameon=False, bbox_to_anchor=(0, 1.05), loc="upper left", fontsize=10)
 
-    # C
+    # D
     ax = axes[2]
     width = 0.27
     for i, q in enumerate([2, 4, 5]):
@@ -113,7 +136,7 @@ def visualize_fig2(bootstrap_result):
     ax.set_xlabel("Threshold")
     ax.spines[["top", "right", "left"]].set_visible(False)
 
-    plt.savefig(f"{save_dir(script_name)}/Fig2.pdf", format="pdf", dpi=300, bbox_inches="tight", transparent=True)
+    plt.savefig(f"{save_dir(script_name)}/Fig2_BCD.pdf", format="pdf", dpi=300, bbox_inches="tight", transparent=True)
     plt.close()
 
 if __name__ == "__main__":
