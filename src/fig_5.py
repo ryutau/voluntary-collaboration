@@ -22,9 +22,9 @@ script_name = re.sub(r"\.py$", "", os.path.basename(__file__))
 
 def main():
     exp_data = pd.read_csv("../data/sub_exp_result.csv", index_col=0)
-    # plot_fig5a(exp_data)
-    # plot_fig5b(exp_data)
-    # plot_fig5c(exp_data)
+    plot_fig5a(exp_data)
+    plot_fig5b(exp_data)
+    plot_fig5c(exp_data)
     reg_analysis(exp_data)
 
 def plot_fig5a(exp_data):
@@ -36,14 +36,12 @@ def plot_fig5a(exp_data):
         N = sum(rho_data)
         get_nl = lambda p: "\n" if p > 28 else " "
         ax.pie(
-            rho_data, labels=None, #autopct=lambda p: f'{p * N / 100:.0f}{get_nl(p)}({p:.1f}%)',
+            rho_data, labels=None,
             autopct=lambda x: int(round(N * x / 100, 0)),
             startangle=90, counterclock=False, colors=["C1", "C0", "C2"], wedgeprops={'linewidth': 1, 'edgecolor':"white"},
-            # textprops={"color": "k", "fontsize": 14}
             textprops={"color": "w", "fontsize": 20}
         )
         ax.set_title(f"$\\rho = {rho:.1f}$", y=.97)
-    # plt.tight_layout()
     plt.savefig(f"{save_dir(script_name)}/Fig5A.pdf", format="pdf", dpi=300, bbox_inches="tight")
     plt.close()
 
@@ -65,38 +63,64 @@ def compute_group_success_rate(r_c, r_d, r_l, rho):
     coop_rate = compute_coop_rate(r_c, r_d, r_l, rho)
     return sum([gamma_nk(5, k, coop_rate) for k in [4, 5]])
 
-def compute_stats(rho, rho_data):
+def compute_non_reg_stats(rho, rho_data):
     n_c, n_d, n_l = [(rho_data['action'] == action).sum() for action in ['C', 'D', 'L']]
     coop_rate = compute_coop_rate(n_c, n_d, n_l, rho)
     group_success_rate = compute_group_success_rate(n_c, n_d, n_l, rho)
     return coop_rate, group_success_rate
-            
-def bootstrap_stats(exp_data, n_bootstrap=1000):
+
+def compute_reg_stats(exp_data):
+    model_formula = 'gamma ~ rho + (1|pid)'
+    model = Lmer(model_formula, data=exp_data, family='binomial')
+    model.fit()
+    est = model.coefs.loc['rho', 'Estimate']
+    return est
+
+def bootstrap_stats(exp_data, kind, n_bootstrap=1000):
     rho_list = [0, 0.5, 1]
-    # compute base stats
-    base_stats = {rho: compute_stats(rho, rho_data) for rho, rho_data in exp_data.groupby('rho')}
-    coop_rate_base = {rho: base_stats[rho][0] for rho in rho_list}
-    group_success_rate_base = {rho: base_stats[rho][1] for rho in rho_list}    
-    # bootstrap exp_data using pids
-    # for each bootstrap, we compute the cooperation rate and the group success rate
-    # and then we compute the 95% confidence intervals of them
-    unique_pids = exp_data['participant_code'].unique()
-    coop_rate_store = {rho:[] for rho in rho_list}
-    group_success_rate_store = {rho:[] for rho in rho_list}
+    # compute base stats and prepare the strage for bootstrap
+    if kind == 'non_reg':
+        base_stats = {rho: compute_non_reg_stats(rho, rho_data) for rho, rho_data in exp_data.groupby('rho')}
+        coop_rate_base = {rho: base_stats[rho][0] for rho in rho_list}
+        group_success_rate_base = {rho: base_stats[rho][1] for rho in rho_list}
+        coop_rate_store = {rho:[] for rho in rho_list}
+        group_success_rate_store = {rho:[] for rho in rho_list}
+    elif kind == 'reg':
+        beta_base = compute_reg_stats(exp_data)
+        beta_store = []
+
+    # Bootstrap exp_data using pids, while reassiging a new pid for each sample.
+    # For each bootstrap, we compute the focal stats and then we compute their empirical 95% CIs.
+    unique_pids = exp_data['pid'].unique()
     for i in tqdm(range(n_bootstrap)):
         bootstrap_pids = resample(unique_pids, random_state=i)
-        bootstrap_data = pd.concat([exp_data[exp_data['participant_code'] == pid] for pid in bootstrap_pids])
-        for rho, rho_data in bootstrap_data.groupby('rho'):
-            coop_rate, group_success_rate = compute_stats(rho, rho_data)
-            coop_rate_store[rho].append(coop_rate)
-            group_success_rate_store[rho].append(group_success_rate)
+        bootstrap_data = pd.concat([
+            exp_data[exp_data['pid'] == pid].assign(pid=j)
+            for j, pid in enumerate(bootstrap_pids)
+        ])
+        if kind == 'non_reg':
+            for rho, rho_data in bootstrap_data.groupby('rho'):
+                coop_rate, group_success_rate = compute_non_reg_stats(rho, rho_data)
+                coop_rate_store[rho].append(coop_rate)
+                group_success_rate_store[rho].append(group_success_rate)
+        elif kind == 'reg':
+            beta = compute_reg_stats(bootstrap_data)
+            beta_store.append(beta)
     # compute 95% confidence intervals
-    coop_rate_ci = {rho:np.percentile(coop_rate_store[rho], [2.5, 97.5]) for rho in rho_list}
-    group_success_rate_ci = {rho:np.percentile(group_success_rate_store[rho], [2.5, 97.5]) for rho in rho_list}
-    return coop_rate_base, group_success_rate_base, coop_rate_ci, group_success_rate_ci
+    if kind == 'non_reg':
+        coop_rate_ci = {rho:np.percentile(coop_rate_store[rho], [2.5, 97.5]) for rho in rho_list}
+        group_success_rate_ci = {rho:np.percentile(group_success_rate_store[rho], [2.5, 97.5]) for rho in rho_list}
+        return coop_rate_base, group_success_rate_base, coop_rate_ci, group_success_rate_ci
+    elif kind == 'reg':
+        beta_se = np.std(beta_store)
+        beta_ci = np.percentile(beta_store, [2.5, 97.5])
+        get_p = lambda x: min((x >= 0).mean(), (x <= 0).mean()) * 2
+        p = get_p(np.array(beta_store))
+        return beta_base, beta_se, beta_ci, p
+
 
 def plot_fig5b(exp_data):
-    coop_rate_base, group_success_rate_base, coop_rate_ci, group_success_rate_ci = bootstrap_stats(exp_data, 1000)
+    coop_rate_base, group_success_rate_base, coop_rate_ci, group_success_rate_ci = bootstrap_stats(exp_data, kind='non_reg', n_bootstrap=1000)
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(5.8, 3))
     coop_rate_lower_ci = [coop_rate_base[rho] - coop_rate_ci[rho][0] for rho in coop_rate_base]
@@ -157,11 +181,11 @@ def plot_fig5c(exp_data):
 
 
 def reg_analysis(exp_data):
-    exp_data['gamma'] = exp_data.apply(lambda x: compute_coop_rate(x['belief_c'], x['belief_d'], x['belief_l'], x['rho']), axis=1)
-    model_formula = 'gamma ~ rho + (1|participant_code)'
-    model = Lmer(model_formula, data=exp_data, family='binomial')
-    result = model.fit()
-    result.to_csv(f"{save_dir(script_name)}/reg_res.csv")
+    beta_base, beta_se, beta_ci, p = bootstrap_stats(exp_data, kind='reg', n_bootstrap=1000)
+    stats_series = pd.Series(
+        dict(base=beta_base, se=beta_se, z=beta_base/beta_se,
+             ci_lower=beta_ci[0], ci_upper=beta_ci[1], two_tailed_p=p))
+    stats_series.to_csv(f"{save_dir(script_name)}/reg_res.csv")
 
 
 if __name__ == "__main__":

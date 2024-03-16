@@ -43,7 +43,7 @@ We have the following two files in this directory:
 
 3. `sub_exp_result.csv`: This file contains behavioral data from the additional experiment. Each row represents the result of a participant for a specific round. The columns in this file are detailed as follows:
 
-   - **participant_code**: Represents the participant's identification code. Use this when merging with `sub_participant_attributes.csv`.
+   - **pid**: Represents the participant's identification code. Use this when merging with `sub_participant_attributes.csv`.
    - **rho**: Can be either 0, 0.5, or 1, and indicates the degree of loners' externality (i.e., the probability of a loner being included in the five-person groups) for the round.
    - **belief_c**: Indicates the participant's estimation of the number of other players choosing the action 'cooperate'.
    - **belief_d**: Indicates the participant's estimation of the number of other players choosing to 'defect'.
@@ -57,7 +57,10 @@ We have the following two files in this directory:
 
 4. `sub_participant_attributes.csv`: This file contains the attributes of the participants in the additional experiment. The columns in this file are detailed as follows:
 
-   - **participant_code**: Represents the participant's identification code. Use this when merging with `sub_exp_result.csv`.
+   - **pid**: Represents the participant's identification code. Use this when merging with `sub_exp_result.csv`.
    - **age**: Indicates the participant's age.
    - **gender**: Indicatess the participant's gender (male: 0, female: 1, or not to declare: 3).
    - **session_no**: Indicates the session number that the participant involved.
+   - **gamma**: Indicates the participant's belief about the effective cooperation computed from belief_c, belief_d, belief_l, and rho.
+
+*) Data files were updated in March 2024 to correct column names and index numbers.

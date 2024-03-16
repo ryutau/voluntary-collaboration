@@ -34,8 +34,12 @@ def compute_non_reg_stats(exp_data, seed):
         exp_data[lambda x: ~ x.is_leave].dropna(subset=["gamma_c"])
         .groupby(["p_option", "thr"]).apply(
             lambda x: pd.Series({
-                "roc_auc_raw": wrap_roc_auc_score(x.is_coop, x.gamma_c),
-                "roc_auc_p_piv": wrap_roc_auc_score(x.is_coop, p_k(4, x.gamma_c, x.thr-1))
+                "delta_roc_auc": (
+                    wrap_roc_auc_score(x.is_coop, x.gamma_c)
+                    - wrap_roc_auc_score(x.is_coop, p_k(4, x.gamma_c, x.thr-1))
+                )
+                # "roc_auc_raw": wrap_roc_auc_score(x.is_coop, x.gamma_c),
+                # "roc_auc_p_piv": wrap_roc_auc_score(x.is_coop, p_k(4, x.gamma_c, x.thr-1))
             })
         ).reset_index()
     )

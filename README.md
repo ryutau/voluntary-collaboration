@@ -38,14 +38,14 @@ First, please run `src/main_analysis.py` to perform all the analysis. This may t
 ```
 $ python main_analysis.py
 ```
-Output files are saved in the `src/output` folder. To review regression analysis, directly inspect `bootstrap_reg_stats.csv`.
+Output files are saved in the `output` folder. To review regression analysis, please inspect `bootstrap_reg_stats.csv`directlly.
 
 
 Then, you can run `src/fig~~.py` to reproduce figures in the paper. Each script will not take more than a few minutes. For example, to create figure 1:
 ```
 $ python fig_1.py
 ```
-Output figures are stored under the `src/output` folder.
+Output figures are stored under the `output` folder.
 
 ## Further reference
 For further reference, please contact to [Ryutaro Mori](https://ryutau.github.io/) (ryutau.mori[at]gmail.com).

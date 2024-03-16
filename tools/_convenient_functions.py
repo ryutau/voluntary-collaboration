@@ -36,5 +36,7 @@ def bootstrap_sampling(original_exp_data, random_seed):
     random.seed(random_seed)
     unique_pids = original_exp_data["pid"].unique()
     sampled_pids = random.choices(unique_pids, k=len(unique_pids)) # sample with replacement
-    sampled_exp_data = pd.concat([original_exp_data[lambda x: x["pid"] == pid] for pid in sampled_pids]).reset_index(drop=True)
+    sampled_exp_data = pd.concat(
+        [original_exp_data[lambda x: x["pid"] == pid].assign(pid=i)
+         for i, pid in enumerate(sampled_pids)]).reset_index(drop=True)
     return sampled_exp_data
