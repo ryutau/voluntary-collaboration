@@ -42,7 +42,7 @@ def plot_fig5a(exp_data):
             textprops={"color": "w", "fontsize": 20}
         )
         ax.set_title(f"$\\rho = {rho:.1f}$", y=.97)
-    plt.savefig(f"{save_dir(script_name)}/Fig5A.pdf", format="pdf", dpi=300, bbox_inches="tight")
+    plt.savefig(f"{save_dir(script_name)}/Fig5A.svg", format="svg", dpi=300, bbox_inches="tight")
     plt.close()
 
 def compute_coop_rate(r_c, r_d, r_l, rho):
@@ -143,7 +143,7 @@ def plot_fig5b(exp_data):
     ax2.set_ylabel("Group success rate")
     plt.tight_layout()
     plt.subplots_adjust(wspace=.6)
-    plt.savefig(f"{save_dir(script_name)}/Fig5B.pdf", format="pdf", dpi=300)
+    plt.savefig(f"{save_dir(script_name)}/Fig5B.svg", format="svg", dpi=300)
     plt.close()
 
 def plot_fig5c(exp_data):
@@ -176,7 +176,7 @@ def plot_fig5c(exp_data):
 
     fig.text(0.51, -.05, "Belief about others' cooperativeness", ha='center', va='center')
     # plt.tight_layout()
-    plt.savefig(f"{save_dir(script_name)}/Fig5C.pdf", format="pdf", dpi=300, bbox_inches="tight")
+    plt.savefig(f"{save_dir(script_name)}/Fig5C.svg", format="svg", dpi=300, bbox_inches="tight")
     plt.close()
 
 

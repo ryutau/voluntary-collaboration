@@ -49,7 +49,7 @@ def main():
     for ax in axes:
         ax.invert_xaxis()
     plt.tight_layout()
-    plt.savefig(f"{save_dir(script_name)}/Fig4.pdf", format="pdf", dpi=300, bbox_inches="tight")
+    plt.savefig(f"{save_dir(script_name)}/Fig4.svg", format="svg", dpi=300, bbox_inches="tight")
     plt.close()
 
 

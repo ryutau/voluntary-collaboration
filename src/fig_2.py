@@ -53,8 +53,8 @@ def plot_pies(exp_data):
         )
         plt.axis('equal')
         plt.savefig(
-            f"{save_dir(script_name)}/Fig2A_pie_{thr}_{p_option}.pdf",
-            format="pdf", dpi=300, bbox_inches="tight", transparent=True
+            f"{save_dir(script_name)}/Fig2A_pie_{thr}_{p_option}.svg",
+            format="svg", dpi=300, bbox_inches="tight", transparent=True
         )
         plt.close()
 
@@ -136,7 +136,7 @@ def visualize_BCD(bootstrap_result):
     ax.set_xlabel("Threshold")
     ax.spines[["top", "right", "left"]].set_visible(False)
 
-    plt.savefig(f"{save_dir(script_name)}/Fig2_BCD.pdf", format="pdf", dpi=300, bbox_inches="tight", transparent=True)
+    plt.savefig(f"{save_dir(script_name)}/Fig2_BCD.svg", format="svg", dpi=300, bbox_inches="tight", transparent=True)
     plt.close()
 
 if __name__ == "__main__":

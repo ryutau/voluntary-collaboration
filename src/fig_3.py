@@ -210,7 +210,7 @@ def visualize_fig3(d_l_ratio_dic, p_leave_by_action, p_coop_non_loner, non_loner
                 fontsize=10, frameon=False, loc="lower left", bbox_to_anchor=(.5, 0)
             )
 
-    plt.savefig(f"{save_dir(script_name)}/Fig3.pdf", format="pdf", dpi=300, bbox_inches="tight", transparent=True)
+    plt.savefig(f"{save_dir(script_name)}/Fig3.svg", format="svg", dpi=300, bbox_inches="tight", transparent=True)
     plt.close()
 
 

@@ -101,7 +101,7 @@ def visualize_game_analysis():
         else:
             ax.set_yticklabels([])
     plt.tight_layout()
-    plt.savefig(f"{save_dir(script_name)}/expected_payoff_per_action.pdf", format="pdf", dpi=300)
+    plt.savefig(f"{save_dir(script_name)}/expected_payoff_per_action.svg", format="svg", dpi=300)
 
 p_group_success = lambda gamma, q: sum([p_k(5, gamma, k) for k in range(q, 6)])
 util_coop = lambda gamma, q: 30 * sum([p_k(4, gamma, k) for k in range(q-1, 5)])
@@ -140,7 +140,7 @@ def validate_cross_point_gamma_values():
             ax.set_yticks([])
             ax.set_ylabel("")
     plt.tight_layout()
-    plt.savefig(f"{save_dir(script_name)}/validate_cross_point_gamma_values.pdf", format="pdf", dpi=300)
+    plt.savefig(f"{save_dir(script_name)}/validate_cross_point_gamma_values.svg", format="svg", dpi=300)
 
 
 if __name__ == "__main__":
